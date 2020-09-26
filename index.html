@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #canvas {
+            /* 表示和屏幕一样高 */
+
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <div id="canvas">
+    </div> -->
+    <!-- canvas是一个inline元素，所以设置宽高无效,，类似于img -->
+    <canvas id="canvas"></canvas>
+    <script>
+        let canvas = document.getElementById('canvas');
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+        let ctx = canvas.getContext('2d');
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 8;
+        ctx.lineCap = "round";
+
+        let paintting = false;
+        let last = [];
+        let isTouchDevice = 'ontouchstart' in document.documentElement;
+        if (isTouchDevice) {
+            canvas.ontouchstart = (e) => {
+                let x = e.touches[0].clientX;
+                let y = e.touches[0].clientY;
+                last = [x, y];
+            }
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX;
+                let y = e.touches[0].clientY;
+                drawLine(last[0], last[1], x, y);
+                last = [x, y]
+
+            }
+        } else {
+
+            canvas.onmousedown = (e) => {
+                paintting = true;
+                last = [e.clientX, e.clientY];
+            }
+            canvas.onmousemove = (e) => {
+                if (paintting) {
+                    drawLine(last[0], last[1], e.clientX, e.clientY);
+                    last = [e.clientX, e.clientY]
+                }
+            }
+            canvas.onmouseup = () => {
+                paintting = false;
+            }
+
+        }
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        // canvas.onmousedown = () => {
+        //     paintting = true;
+        // }
+        // canvas.onmousemove = (e) => {
+        //     if (paintting) {
+        //         ctx.beginPath();
+        //         ctx.arc(e.clientX, e.clientY, 10, 0, 2 * Math.PI);
+        //         ctx.stroke();
+        //         ctx.fill();
+        //     } else {
+        //         console.log('我不画了！');
+        //     }
+        // }
+
+        // 浏览器会调用canvas.onmousemove(事件相关信息e)
+        // canvas.onmouseup = () => {
+        //     paintting = false;
+        // }
+        // canvas.onmousemove=(e)=>{
+        //     console.log(e);
+        //     let div=document.createElement('div');
+        //     div.style.position='absolute';
+        //     div.style.top=e.clientY+'px';
+        //     div.style.left=e.clientX+'px';
+        //     // div.style.border='1px solid red';
+        //     div.style.width='6px';
+        //     div.style.height='6px';
+        //     div.style.marginLeft='-3px';
+        //     div.style.marginTop='-3px';
+        //     div.style.borderRadius='50%';
+        //     div.style.backgroundColor='black';
+        //     canvas.appendChild(div)
+        // }
+    </script>
+</body>
+
+</html>
